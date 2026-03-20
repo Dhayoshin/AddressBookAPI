@@ -48,7 +48,12 @@ cd AddressBookAPI
 python -m venv venv
 venv\Scripts\activate
 
+# If you get a script execution policy error, run this first:
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
+venv\Scripts\activate
+
 # macOS/Linux
+```
 python3 -m venv venv
 source venv/bin/activate
 ```
