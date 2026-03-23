@@ -3,7 +3,9 @@ from sqlalchemy.exc import SQLAlchemyError
 from typing import List, Optional
 from . import models, schemas
 
+
 def create_address(db: Session, address: schemas.AddressCreate) -> models.Address:
+    """Create a new address in the database."""
     try:
         db_address = models.Address(**address.dict())
         db.add(db_address)
@@ -14,13 +16,19 @@ def create_address(db: Session, address: schemas.AddressCreate) -> models.Addres
         db.rollback()
         raise
 
+
 def get_addresses(db: Session) -> List[models.Address]:
+    """Retrieve all addresses from the database."""
     return db.query(models.Address).all()
 
+
 def get_address(db: Session, address_id: int) -> Optional[models.Address]:
+    """Retrieve a single address by ID."""
     return db.query(models.Address).filter(models.Address.id == address_id).first()
 
+
 def update_address(db: Session, address_id: int, data: schemas.AddressCreate) -> Optional[models.Address]:
+    """Update an existing address."""
     address = get_address(db, address_id)
     if not address:
         return None
@@ -35,7 +43,9 @@ def update_address(db: Session, address_id: int, data: schemas.AddressCreate) ->
         db.rollback()
         raise
 
+
 def delete_address(db: Session, address_id: int) -> bool:
+    """Delete an address by ID."""
     address = get_address(db, address_id)
     if not address:
         return False

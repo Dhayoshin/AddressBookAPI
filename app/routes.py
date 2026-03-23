@@ -9,7 +9,9 @@ from .logger import logger
 
 router = APIRouter(prefix="/api/v1/addresses", tags=["Addresses"])
 
+
 def get_db():
+    """Dependency to get database session."""
     db = SessionLocal()
     try:
         yield db
@@ -19,6 +21,7 @@ def get_db():
 
 @router.post("/", response_model=schemas.AddressOut)
 def create_address(address: schemas.AddressCreate, db: Session = Depends(get_db)):
+    """Create a new address."""
     logger.info(f"Creating address: {address.name}")
     try:
         return crud.create_address(db, address)
@@ -29,12 +32,14 @@ def create_address(address: schemas.AddressCreate, db: Session = Depends(get_db)
 
 @router.get("/", response_model=List[schemas.AddressOut])
 def get_all(db: Session = Depends(get_db)):
+    """Get all addresses."""
     logger.info("Fetching all addresses")
     return crud.get_addresses(db)
 
 
 @router.put("/{address_id}", response_model=schemas.AddressOut)
 def update(address_id: int, data: schemas.AddressCreate, db: Session = Depends(get_db)):
+    """Update an existing address."""
     logger.info(f"Updating address ID: {address_id}")
     result = crud.update_address(db, address_id, data)
 
@@ -46,6 +51,7 @@ def update(address_id: int, data: schemas.AddressCreate, db: Session = Depends(g
 
 @router.delete("/{address_id}")
 def delete(address_id: int, db: Session = Depends(get_db)):
+    """Delete an address."""
     logger.info(f"Deleting address ID: {address_id}")
     success = crud.delete_address(db, address_id)
 
@@ -62,6 +68,7 @@ def nearby(
     distance_km: float = Query(..., gt=0),
     db: Session = Depends(get_db)
 ):
+    """Find addresses within a specified distance."""
     logger.info(f"Searching nearby addresses: lat={lat}, lon={lon}, distance={distance_km}")
 
     addresses = crud.get_addresses(db)
